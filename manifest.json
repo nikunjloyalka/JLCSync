@@ -1,0 +1,39 @@
+{
+  "name": "JLC Sync",
+  "short_name": "JLC Sync",
+  "description": "CA Practice Management Suite",
+  "start_url": "/JLCSync/",
+  "scope": "/JLCSync/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f0f4fa",
+  "theme_color": "#1a3a5c",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='32' fill='%231a3a5c'/%3E%3Ctext x='50%25' y='58%25' font-family='Arial' font-weight='bold' font-size='80' fill='%23fff' text-anchor='middle' dominant-baseline='middle'%3EJLC%3C/text%3E%3C/svg%3E",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='80' fill='%231a3a5c'/%3E%3Ctext x='50%25' y='58%25' font-family='Arial' font-weight='bold' font-size='200' fill='%23fff' text-anchor='middle' dominant-baseline='middle'%3EJLC%3C/text%3E%3C/svg%3E",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["productivity", "business"],
+  "shortcuts": [
+    {
+      "name": "Add Litigation Case",
+      "short_name": "Add Case",
+      "url": "/JLCSync/?action=new-case",
+      "description": "Open Litigation and add a new case"
+    },
+    {
+      "name": "Add ROC Filing",
+      "short_name": "Add ROC",
+      "url": "/JLCSync/?action=new-roc",
+      "description": "Open ROC and add a new filing"
+    }
+  ]
+}
