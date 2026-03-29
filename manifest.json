@@ -1,0 +1,40 @@
+{
+  "name": "JLC Sync",
+  "short_name": "JLC Sync",
+  "description": "CA Practice Management Suite by Loyalka & Co.",
+  "start_url": "/JLCSync/",
+  "scope": "/JLCSync/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0d2240",
+  "theme_color": "#1a3a5c",
+  "icons": [
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxOTIgMTkyIj4KICA8cmVjdCB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgcng9IjMzIiBmaWxsPSIjMGQyMjQwIi8+CiAgPGNpcmNsZSBjeD0iOTYiIGN5PSI3NCIgcj0iNDQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2YwYzA0MCIgc3Ryb2tlLXdpZHRoPSIzLjUiIG9wYWNpdHk9IjAuNSIgc3Ryb2tlLWRhc2hhcnJheT0iOCA0Ii8+CiAgPGNpcmNsZSBjeD0iOTYiIGN5PSI3NCIgcj0iMzYiIGZpbGw9IiNmMGMwNDAiIG9wYWNpdHk9IjAuMDciLz4KICA8dGV4dCB4PSI5NiIgeT0iOTQiIGZvbnQtZmFtaWx5PSJUaW1lcyBOZXcgUm9tYW4sc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZvbnQtc2l6ZT0iNjIiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBsZXR0ZXItc3BhY2luZz0iMyI+SkxDPC90ZXh0PgogIDxyZWN0IHg9IjMwIiB5PSIxMTAiIHdpZHRoPSIxMzIiIGhlaWdodD0iMi41IiByeD0iMS4yNSIgZmlsbD0iI2YwYzA0MCIgb3BhY2l0eT0iMC4zNSIvPgogIDxyZWN0IHg9IjM4IiB5PSIxMTQiIHdpZHRoPSIxMTYiIGhlaWdodD0iNCIgcng9IjIiIGZpbGw9IiNmMGMwNDAiLz4KICA8dGV4dCB4PSI5NiIgeT0iMTUwIiBmb250LWZhbWlseT0iVGltZXMgTmV3IFJvbWFuLHNlcmlmIiBmb250LXN0eWxlPSJpdGFsaWMiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiNmMGMwNDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGxldHRlci1zcGFjaW5nPSI2Ij5TeW5jPC90ZXh0Pgo8L3N2Zz4K",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KICA8cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9Ijg4IiBmaWxsPSIjMGQyMjQwIi8+CiAgPGNpcmNsZSBjeD0iMjU2IiBjeT0iMTk4IiByPSIxMTciIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2YwYzA0MCIgc3Ryb2tlLXdpZHRoPSI5IiBvcGFjaXR5PSIwLjUiIHN0cm9rZS1kYXNoYXJyYXk9IjIyIDExIi8+CiAgPGNpcmNsZSBjeD0iMjU2IiBjeT0iMTk4IiByPSI5NSIgZmlsbD0iI2YwYzA0MCIgb3BhY2l0eT0iMC4wNyIvPgogIDx0ZXh0IHg9IjI1NiIgeT0iMjUwIiBmb250LWZhbWlseT0iVGltZXMgTmV3IFJvbWFuLHNlcmlmIiBmb250LXdlaWdodD0iNzAwIiBmb250LXNpemU9IjE2MiIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGxldHRlci1zcGFjaW5nPSI4Ij5KTEM8L3RleHQ+CiAgPHJlY3QgeD0iODEiIHk9IjI5MyIgd2lkdGg9IjM1MCIgaGVpZ2h0PSI3IiByeD0iMy41IiBmaWxsPSIjZjBjMDQwIiBvcGFjaXR5PSIwLjM1Ii8+CiAgPHJlY3QgeD0iMTAyIiB5PSIzMDUiIHdpZHRoPSIzMDgiIGhlaWdodD0iMTEiIHJ4PSI1LjUiIGZpbGw9IiNmMGMwNDAiLz4KICA8dGV4dCB4PSIyNTYiIHk9IjM5NyIgZm9udC1mYW1pbHk9IlRpbWVzIE5ldyBSb21hbixzZXJpZiIgZm9udC1zdHlsZT0iaXRhbGljIiBmb250LXNpemU9IjQ4IiBmaWxsPSIjZjBjMDQwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBsZXR0ZXItc3BhY2luZz0iMTUiPlN5bmM8L3RleHQ+Cjwvc3ZnPgo=",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": [
+    "productivity",
+    "business"
+  ],
+  "shortcuts": [
+    {
+      "name": "Add Litigation Case",
+      "short_name": "Add Case",
+      "url": "/JLCSync/?action=new-case"
+    },
+    {
+      "name": "Add ROC Filing",
+      "short_name": "Add ROC",
+      "url": "/JLCSync/?action=new-roc"
+    }
+  ]
+}
