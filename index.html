@@ -1782,6 +1782,37 @@ const LIT_SL={'Notice & Hearing':'Notice / Hearing Scheduled','Replied':'Replied
 let litEditId=null, litHideClosed=false, litF={act:new Set(),type:new Set(),status:new Set(),fy:new Set()};
 
 // ╔══ SECTION: LITIGATION MODULE ════════════════════════════════════╗
+
+function buildLitActTabs(){
+  const O    = litGetOpts();
+  const acts = O.litAct||[];
+  const cases= ls('ca_cases',[]);
+  const bar  = document.getElementById('litActTabs');
+  if(!bar) return;
+
+  // Count per act (active cases only)
+  const counts={all:cases.filter(c=>c.status!=='Closed').length};
+  acts.forEach(a=>{ counts[a]=cases.filter(c=>c.act===a&&c.status!=='Closed').length; });
+
+  const tabs=[{key:'all',label:'All',count:counts['all']},...acts.map(a=>({key:a,label:a,count:counts[a]||0}))];
+  bar.innerHTML=tabs.map(t=>{
+    const active=litActiveAct===t.key;
+    return `<div id="litActTab_${t.key}" onclick="setLitActTab('${t.key}')"
+      style="padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;
+             color:${active?'var(--primary-mid)':'var(--text3)'};
+             border-bottom:2px solid ${active?'var(--primary-mid)':'transparent'};
+             margin-bottom:-2px">
+      ${t.label}${t.count?' <span style="background:var(--primary);color:#fff;border-radius:8px;padding:1px 6px;font-size:10px;font-weight:700;margin-left:3px">'+t.count+'</span>':''}
+    </div>`;
+  }).join('');
+}
+
+function setLitActTab(act){
+  litActiveAct = act;
+  buildLitActTabs();
+  litRender();
+}
+
 function loadLitigationApp(){
   litViewMode='active';
   const isAdmin = currentUser.role==='admin';
@@ -1794,6 +1825,10 @@ function loadLitigationApp(){
       ${isAdmin?`<div class="tab" onclick="litShowPage('opts')">Field Options</div>`:''}
     </div>
     <div id="lp-cases" class="page active">
+        <div id="litActTabs" style="display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:12px;overflow-x:auto">
+          <div id="litActTab_all" onclick="setLitActTab('all')"
+            style="padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;color:var(--primary-mid);border-bottom:2px solid var(--primary-mid);margin-bottom:-2px">All</div>
+        </div>
       <div class="stats-grid" id="litStats"></div>
       <div style="display:flex;gap:0;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:12px;background:var(--surface)">
         <button id="litTab-all" onclick="setLitActionTab('all')" style="flex:1;padding:8px 4px;font-size:12px;font-weight:600;border:none;cursor:pointer;background:var(--primary);color:#fff;border-radius:9px 0 0 9px">All</button>
@@ -1803,6 +1838,11 @@ function loadLitigationApp(){
       <div style="margin-bottom:14px">
         <div style="display:flex;gap:8px;margin-bottom:10px">
           <input class="search-box" id="litSearch" placeholder="Search client, description…" oninput="litRender()" style="flex:1">
+          <button onclick="litGroupByType=!litGroupByType;litRender()"
+            id="litGroupBtn"
+            style="border:1px solid var(--border);border-radius:7px;padding:7px 12px;font-size:12px;background:var(--surface);cursor:pointer;flex-shrink:0;font-weight:600;color:var(--text2);white-space:nowrap">
+            ⊞ Group by Type
+          </button>
           <select id="litSort" onchange="setSort('lit',this.value);litRender()" style="border:1px solid var(--border);border-radius:7px;padding:7px 10px;font-size:12px;background:var(--surface);cursor:pointer;flex-shrink:0;width:150px"><option value="default">Sort: Default</option><option value="client-asc">Client A→Z</option><option value="client-desc">Client Z→A</option><option value="deadline-asc">Deadline ↑</option><option value="deadline-desc">Deadline ↓</option><option value="status-asc">Status</option></select>
           <button onclick="litToggleFilters()" style="display:inline-flex;align-items:center;gap:5px;padding:8px 14px;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;white-space:nowrap" id="litFilterBtn">▼ Filters</button>
           <button id="litClosedToggleBtn" onclick="litToggleClosedView()" style="font-size:12px;padding:6px 10px;border:1px solid var(--border);border-radius:7px;background:var(--surface);cursor:pointer;color:var(--text2);white-space:nowrap;flex-shrink:0;display:flex;align-items:center;gap:4px"><span id="litClosedBtnIcon">📁</span><span id="litClosedBtnLabel">Closed</span><span id="litClosedCount" style="background:var(--bg);border-radius:8px;padding:0 5px;font-size:11px;font-weight:700"></span></button>
@@ -2178,10 +2218,13 @@ function litRender(){
   const pool = litViewMode==='closed'
     ? cases.filter(c=>c.status==='Closed')
     : cases.filter(c=>c.status!=='Closed');
+
+  // Apply act super-tab filter BEFORE other filters
+  const poolByAct = litActiveAct==='all' ? pool : pool.filter(c=>c.act===litActiveAct);
   // Update closed count badge
   const closedCount=cases.filter(c=>c.status==='Closed').length;
   const cntEl=document.getElementById('litClosedCount'); if(cntEl) cntEl.textContent=closedCount||'';
-  const list=pool.filter(c=>{
+  const list=poolByAct.filter(c=>{
     if(litViewMode!=='closed'){
       if(litF.act.size&&!litF.act.has(c.act))return false;
       if(litF.type.size&&!litF.type.has(c.type))return false;
@@ -2209,11 +2252,19 @@ function litRender(){
   const litSortEl=document.getElementById('litSort'); if(litSortEl) litSortEl.value=getSort('lit');
   const el=document.getElementById('caseList'); if(!el)return;
   if(!_litSorted.length){el.innerHTML=emptyState('📂','No cases found','Tap + to add your first case');return;}
+
+  // Update group button style
+  const gbtn=document.getElementById('litGroupBtn');
+  if(gbtn){ gbtn.style.background=litGroupByType?'var(--primary)':'var(--surface)';
+            gbtn.style.color=litGroupByType?'#fff':'var(--text2)';
+            gbtn.style.borderColor=litGroupByType?'var(--primary)':'var(--border)'; }
+
   const sm={'Open':'open','Notice & Hearing':'hearing','Replied':'replied','Order Received':'payment','Closed':'closed'};
-  el.innerHTML=_litSorted.map(c=>{
+
+  // Build single card HTML (reused for flat and grouped)
+  function buildCaseCard(c){
     const sl=LIT_SL[c.status]||c.status, fyLabel=getFYLabel(c);
     const dlHtml = c.deadline&&c.status!=='Replied' ? dlBadge(c.deadline) : '';
-    const sm={'Open':'open','Notice & Hearing':'hearing','Replied':'replied','Order Received':'payment','Closed':'closed'};
     const badges = `
       <span class="badge b-${(c.act||'').toLowerCase()}">${c.act}</span>
       ${c.type?`<span class="badge b-sub">${c.type}</span>`:''}
@@ -2233,7 +2284,34 @@ function litRender(){
       pinHtml: pinBtn('lit',c.id,'litRender'),
       onclick: `litOpenModal('${c.id}')`,
     });
-  }).join('');
+  
+  }
+
+  if(litGroupByType){
+    // Group by Act (e.g. GST, IT, Customs)
+    const groups={};
+    _litSorted.forEach(c=>{
+      const key = c.act||'Other';
+      if(!groups[key]) groups[key]=[];
+      groups[key].push(c);
+    });
+    const sortedKeys = Object.keys(groups).sort();
+    el.innerHTML = sortedKeys.map(key=>{
+      const gid = 'litg_'+key.replace(/[^a-zA-Z0-9]/g,'_');
+      const cards = groups[key].map(buildCaseCard).join('');
+      return `<div style="margin-bottom:14px">
+        <div onclick="var b=document.getElementById('${gid}');var a=document.getElementById('${gid}_arr');if(b){var c=b.style.display==='none';b.style.display=c?'':'none';if(a)a.style.transform=c?'rotate(0deg)':'rotate(-90deg)';}"
+          style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--primary);color:#fff;border-radius:8px;cursor:pointer;margin-bottom:6px">
+          <span style="flex:1;font-size:13px;font-weight:700">${key}</span>
+          <span style="font-size:12px;opacity:.8">${groups[key].length} case${groups[key].length!==1?'s':''}</span>
+          <span id="${gid}_arr" style="font-size:13px;transition:transform .2s;display:inline-block">▾</span>
+        </div>
+        <div id="${gid}">${cards}</div>
+      </div>`;
+    }).join('');
+  } else {
+    el.innerHTML = _litSorted.map(buildCaseCard).join('');
+  }
 }
 function litRenderStats(){
   const all=ls('ca_cases',[]); const O3=litGetOpts();
@@ -2369,7 +2447,7 @@ function setLitActionTab(tab){
   litRender();
 }
 
-function litRenderAll(){ litRenderStats(); litRender(); litRenderDeadlines(); }
+function litRenderAll(){ litRenderStats(); litRender(); litRenderDeadlines(); buildLitActTabs?.(); }
 
 // Case OneDrive docs
 function caseFolderName(c){
@@ -2612,6 +2690,8 @@ let rocHideFiled=false; // no longer used — filed filings handled by rocViewMo
 let rocViewMode='active'; // 'active' | 'filed'
 let litActionTab='all'; // 'all' | 'action' | 'noaction'
 let litViewMode='active'; // 'active' | 'closed'
+let litGroupByType=false; // group case list by Act/Type
+let litActiveAct='all';   // super-tab: 'all' or a specific act name
 let rocF={form:new Set(),fy:new Set(),paidBy:new Set()};
 
 // ╔══ SECTION: ROC MODULE ══════════════════════════════════════════╗
