@@ -2288,27 +2288,38 @@ function litRender(){
   }
 
   if(litGroupByType){
-    // Group by Act (e.g. GST, IT, Customs)
+    // Group by Type (Assessment, Appeal, Search, etc.) — NOT by Act
     const groups={};
     _litSorted.forEach(c=>{
-      const key = c.act||'Other';
+      const key = c.type||'Other';
       if(!groups[key]) groups[key]=[];
       groups[key].push(c);
     });
     const sortedKeys = Object.keys(groups).sort();
-    el.innerHTML = sortedKeys.map(key=>{
+
+    // Collapse/Expand All controls
+    const collapseBar = `<div style="display:flex;gap:6px;align-items:center;margin-bottom:10px">
+      <span style="font-size:12px;color:var(--text3)">${sortedKeys.length} types · ${_litSorted.length} cases</span>
+      <div style="flex:1"></div>
+      <button class="btn btn-outline" style="font-size:11px;padding:4px 10px"
+        onclick="document.querySelectorAll('.litgroup-body').forEach(b=>{b.style.display='';});document.querySelectorAll('.litgroup-arr').forEach(a=>{a.style.transform='rotate(0deg)'})">⊞ Expand All</button>
+      <button class="btn btn-outline" style="font-size:11px;padding:4px 10px"
+        onclick="document.querySelectorAll('.litgroup-body').forEach(b=>{b.style.display='none'});document.querySelectorAll('.litgroup-arr').forEach(a=>{a.style.transform='rotate(-90deg)'})">⊟ Collapse All</button>
+    </div>`;
+
+    el.innerHTML = collapseBar + sortedKeys.map(key=>{
       const gid = 'litg_'+key.replace(/[^a-zA-Z0-9]/g,'_');
       const cards = groups[key].map(buildCaseCard).join('');
-      return `<div style="margin-bottom:14px">
-        <div onclick="var b=document.getElementById('${gid}');var a=document.getElementById('${gid}_arr');if(b){var c=b.style.display==='none';b.style.display=c?'':'none';if(a)a.style.transform=c?'rotate(0deg)':'rotate(-90deg)';}"
-          style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--primary);color:#fff;border-radius:8px;cursor:pointer;margin-bottom:6px">
+      return `<div style="margin-bottom:12px">
+        <div onclick="var b=document.getElementById('${gid}');var a=document.getElementById('${gid}_arr');if(b){var collapsed=b.style.display==='none';b.style.display=collapsed?'':'none';if(a)a.style.transform=collapsed?'rotate(0deg)':'rotate(-90deg)';}"
+          style="display:flex;align-items:center;gap:10px;padding:9px 14px;background:var(--primary);color:#fff;border-radius:8px;cursor:pointer;margin-bottom:6px">
           <span style="flex:1;font-size:13px;font-weight:700">${key}</span>
-          <span style="font-size:12px;opacity:.8">${groups[key].length} case${groups[key].length!==1?'s':''}</span>
-          <span id="${gid}_arr" style="font-size:13px;transition:transform .2s;display:inline-block">▾</span>
+          <span style="font-size:11px;opacity:.8;background:rgba(255,255,255,.2);padding:2px 8px;border-radius:6px">${groups[key].length} case${groups[key].length!==1?'s':''}</span>
+          <span id="${gid}_arr" class="litgroup-arr" style="font-size:13px;transition:transform .2s;display:inline-block">▾</span>
         </div>
-        <div id="${gid}">${cards}</div>
+        <div id="${gid}" class="litgroup-body">${cards}</div>
       </div>`;
-    }).join('');
+    }).join('')
   } else {
     el.innerHTML = _litSorted.map(buildCaseCard).join('');
   }
